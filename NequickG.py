@@ -863,21 +863,25 @@ class NequickG_bottomside:
 
         # Compute the exponential arguments for each layer
 
-        h[h < 100] = 100
+        m = h.copy()
+        m[m<100] = 100
 
         # thickness parameter with fade out exponent for E and F1 layer
+
         thickF2 = self.B2bot
-        thickF1 = BF1 / np.exp(10 / (1 + np.abs(h - self.hmF2)))
-        thickE = BE / np.exp(10 / (1 + np.abs(h - self.hmF2)))
+        thickF1 = BF1 / np.exp(10 / (1 + np.abs(m - self.hmF2)))
+        thickE = BE / np.exp(10 / (1 + np.abs(m - self.hmF2)))
+
+        # suppress small values in epstein layer
+        diffF2 = (m - self.hmF2)
+        diffF1 = (m - self.hmF1)
+        diffE = (m - self.hmE)
 
         EpstF2 = epstein(self.AmpF2, self.hmF2, thickF2, h)
         EpstF1 = epstein(self.AmpF1, self.hmF1, thickF1, h)
         EpstE = epstein(self.AmpE, self.hmE, thickE, h)
 
-        # suppress small values in epstein layer
-        diffF2 = (h - self.hmF2)
-        diffF1 = (h - self.hmF1)
-        diffE = (h - self.hmE)
+   
 
         alphaF2 = diffF2 / thickF2
         alphaF1 = diffF1 / thickF1
